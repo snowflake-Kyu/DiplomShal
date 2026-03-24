@@ -1,0 +1,119 @@
+﻿<Window x:Class="WPFPPShall.FormCharts"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Анализ учебных часов" Height="600" Width="900"
+        WindowStartupLocation="CenterOwner"
+        Background="White">
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" 
+                   Text="📊 Учебная нагрузка по дисциплинам"
+                   FontSize="22" 
+                   FontWeight="Bold"
+                   Margin="0,0,0,15"
+                   Foreground="#2C3E50"/>
+
+        <Border Grid.Row="1" 
+                Background="White"
+                BorderBrush="#BDC3C7"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="15"
+                Margin="0,0,0,15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" 
+                           Text="График распределения часов"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="#34495E"
+                           Margin="0,0,0,10"/>
+
+                <ScrollViewer Grid.Row="1" 
+                              HorizontalScrollBarVisibility="Auto"
+                              VerticalScrollBarVisibility="Disabled">
+                    <Canvas x:Name="ChartCanvas" 
+                            Height="300"
+                            Background="#F9F9F9"
+                            Margin="5"/>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="2" 
+                Background="White"
+                BorderBrush="#BDC3C7"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="15"
+                Margin="0,0,0,15">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" 
+                           Text="Детализация по дисциплинам"
+                           FontSize="16"
+                           FontWeight="SemiBold"
+                           Foreground="#34495E"
+                           Margin="0,0,0,10"/>
+
+                <ListBox x:Name="DataList" 
+                         Grid.Row="1"
+                         Height="140"
+                         Background="#F9F9F9"
+                         BorderThickness="0"
+                         SelectionChanged="DataList_SelectionChanged"
+                         FontSize="13"/>
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Row="3" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+
+            <Button x:Name="BtnRefresh" 
+                    Content="🔄 Обновить данные" 
+                    Width="140" Height="38"
+                    Margin="0,0,10,0"
+                    Click="BtnRefresh_Click"
+                    Background="#3498DB" 
+                    Foreground="White"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    FontSize="13"/>
+
+            <Button x:Name="BtnClose" 
+                    Content="✕ Закрыть" 
+                    Width="100" Height="38"
+                    Click="BtnClose_Click"
+                    Background="#E74C3C" 
+                    Foreground="White"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    FontSize="13"/>
+        </StackPanel>
+
+        <TextBlock x:Name="TxtStatus" 
+                   Grid.Row="3"
+                   HorizontalAlignment="Left"
+                   VerticalAlignment="Center"
+                   Text="Загрузка данных из БД..."
+                   Foreground="#7F8C8D"
+                   FontSize="12"
+                   Margin="0,0,0,0"/>
+    </Grid>
+</Window>

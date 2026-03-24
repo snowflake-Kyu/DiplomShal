@@ -1,0 +1,9 @@
+﻿<Application x:Class="WPFPPShall.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WPFPPShall"
+             StartupUri="FormLogin.xaml">
+    <Application.Resources>
+         
+    </Application.Resources>
+</Application>

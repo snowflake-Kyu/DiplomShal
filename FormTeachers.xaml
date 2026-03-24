@@ -1,0 +1,121 @@
+﻿<Window x:Class="WPFPPShall.FormTeachers"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPPShall"
+        mc:Ignorable="d"
+        Title="FormTeachers" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="3*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Заголовок -->
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
+                   Text="Учителя"
+                   FontFamily="Segoe UI"
+                   FontSize="16"
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,8"/>
+
+        <!-- Панель фильтрации -->
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2"
+            Orientation="Horizontal"
+            Margin="0,34,0,8">
+
+            <!-- Фильтр по предметам -->
+            <ComboBox x:Name="CbFilterDiscipline"
+              Width="200"
+              Margin="0,0,8,0"
+              SelectionChanged="CbFilterDiscipline_SelectionChanged"
+              DisplayMemberPath="Name"
+              SelectedValuePath="DisciplineID"/>
+
+            <!-- Подпись + фильтр по ФИО -->
+            <TextBlock Text="Фильтр по ФИО:"
+               VerticalAlignment="Center"
+               Margin="0,0,6,0"/>
+            <TextBox x:Name="TxtFilterTeacher"
+             Width="200"
+             Height="24"
+             TextChanged="TxtFilterTeacher_TextChanged"/>
+        </StackPanel>
+
+        <!-- Таблица учителей -->
+        <Border Grid.Row="1" Grid.Column="0"
+                Margin="0,0,8,0"
+                Background="White"
+                CornerRadius="8"
+                BorderBrush="#D1D5DB" BorderThickness="1"
+                Padding="4">
+            <DataGrid x:Name="TeachersGrid"
+                      AutoGenerateColumns="False"
+                      IsReadOnly="True"
+                      HeadersVisibility="Column"
+                      GridLinesVisibility="Horizontal"
+                      SelectionMode="Single"
+                      SelectionUnit="FullRow"
+                      RowHeight="26"
+                      AlternationCount="2"
+                      SelectionChanged="TeachersGrid_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="ID" Binding="{Binding TeacherID}" Width="50"/>
+                    <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="*"/>
+                    <DataGridTextColumn Header="Предмет" Binding="{Binding DisciplineName}" Width="160"/>
+                    <DataGridTextColumn Header="Аудитория" Binding="{Binding AuditoriumName}" Width="120"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <!-- Панель редактирования (только ФИО и Email) -->
+        <Border Grid.Row="1" Grid.Column="1"
+                Background="White"
+                CornerRadius="8"
+                BorderBrush="#D1D5DB" BorderThickness="1"
+                Padding="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="ФИО:" Margin="0,0,6,6" VerticalAlignment="Center"/>
+                <TextBox x:Name="TxtFullName" Grid.Row="0" Grid.Column="1" Height="24" Margin="10,0,0,6"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Email:" Margin="0,0,6,6" VerticalAlignment="Center"/>
+                <TextBox x:Name="TxtEmail" Grid.Row="1" Grid.Column="1" Height="24" Margin="10,0,0,6"/>
+
+                <!-- Примечание: предмет/аудитория редактируются в форме назначений -->
+                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap"
+                           Foreground="Gray" Margin="0,8,0,0">
+                    Примечание: предметы и аудитории для учителя настраиваются в разделе назначений (TeachingAssignment).
+                </TextBlock>
+            </Grid>
+        </Border>
+
+        <!-- Нижние кнопки -->
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,8,0,0">
+            <Button x:Name="BtnAdd" Content="Добавить нового" Width="130" Height="26" Margin="0,0,6,0" Click="BtnAdd_Click"/>
+            <Button x:Name="BtnSave" Content="Сохранить" Width="100" Height="26" Margin="0,0,6,0" Click="BtnSave_Click"/>
+            <Button x:Name="BtnDelete" Content="Удалить" Width="100" Height="26" Margin="0,0,6,0" Click="BtnDelete_Click"/>
+            <Button x:Name="BtnClose" Content="Закрыть" Width="90" Height="26" Click="BtnClose_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

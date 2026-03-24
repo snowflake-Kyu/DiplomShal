@@ -1,0 +1,575 @@
+﻿<Window x:Class="WPFPPShall.FormClassOverview"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFPPShall"
+        mc:Ignorable="d"
+        Title="🎯 Обзор классов и расписания" 
+        Height="847" 
+        Width="1323"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize">
+
+    <Window.Resources>
+        <!-- Светлая тема (фиксированная) -->
+        <SolidColorBrush x:Key="LightBackground" Color="#F8F9FA"/>
+        <SolidColorBrush x:Key="LightCard" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="LightBorder" Color="#E1E5E9"/>
+        <SolidColorBrush x:Key="LightText" Color="#212529"/>
+        <SolidColorBrush x:Key="LightTextSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="LightAccent" Color="#4A6FA5"/>
+        <SolidColorBrush x:Key="LightAccentHover" Color="#3A5A95"/>
+        <SolidColorBrush x:Key="LightSuccess" Color="#28A745"/>
+
+        <!-- Основные ресурсы (светлая тема по умолчанию) -->
+        <SolidColorBrush x:Key="BackgroundColor" Color="#F8F9FA"/>
+        <SolidColorBrush x:Key="CardBackground" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="BorderColor" Color="#E1E5E9"/>
+        <SolidColorBrush x:Key="TextColor" Color="#212529"/>
+        <SolidColorBrush x:Key="TextSecondary" Color="#6C757D"/>
+        <SolidColorBrush x:Key="AccentColor" Color="#4A6FA5"/>
+        <SolidColorBrush x:Key="AccentHover" Color="#3A5A95"/>
+        <SolidColorBrush x:Key="SuccessColor" Color="#28A745"/>
+
+        <!-- Стиль для заголовков -->
+        <Style x:Key="HeaderLabel" TargetType="Label">
+            <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Базовый стиль для кнопок -->
+        <Style TargetType="Button" x:Key="BaseButtonStyle">
+            <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource AccentHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource AccentColor}"/>
+                                <Setter Property="Opacity" Value="0.8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для маленьких кнопок -->
+        <Style TargetType="Button" x:Key="SmallButtonStyle" BasedOn="{StaticResource BaseButtonStyle}">
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Height" Value="30"/>
+        </Style>
+
+        <!-- Стиль для карточек классов -->
+        <Style x:Key="ClassCardBorderStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="Background" Value="{DynamicResource CardBackground}"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="8" 
+                                      ShadowDepth="1" 
+                                      Opacity="0.1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для ListBoxItem -->
+        <Style TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource BorderColor}"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Panel.ZIndex" Value="1"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для DataGrid -->
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#E5E7EB"/>
+            <Setter Property="Foreground" Value="#111827"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Padding" Value="8,0"/>
+        </Style>
+
+        <Style TargetType="DataGridRow">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F3F4F6"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#E0E7FF"/>
+                    <Setter Property="Foreground" Value="#111827"/>
+                    <Setter Property="FontWeight" Value="Medium"/>
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                    <Setter Property="Background" Value="#F9FAFB"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderBrush" Value="Transparent"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Стиль для информационных кнопок справа -->
+        <Style x:Key="InfoButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Left" 
+                                              VerticalAlignment="Center"
+                                              Margin="12,0"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource BorderColor}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource AccentColor}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid Background="{DynamicResource BackgroundColor}">
+        <!-- Основной контейнер -->
+        <Border Margin="20" 
+                Background="{DynamicResource CardBackground}" 
+                CornerRadius="12"
+                BorderBrush="{DynamicResource BorderColor}"
+                BorderThickness="1">
+
+            <Grid Margin="15">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Верхняя панель с заголовком -->
+                <Border Grid.Row="0" 
+                        Background="{DynamicResource CardBackground}" 
+                        CornerRadius="8"
+                        Padding="15"
+                        Margin="0,0,0,15">
+                    <DockPanel>
+                        <!-- Заголовок -->
+                        <StackPanel>
+                            <TextBlock Text="📊 Обзор расписания классов" 
+                                       FontSize="22" 
+                                       FontWeight="Bold" 
+                                       Foreground="{DynamicResource AccentColor}"/>
+                            <TextBlock Text="Выберите дату для просмотра расписания всех классов" 
+                                       FontSize="13" 
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       Margin="0,5,0,0"/>
+                        </StackPanel>
+
+                        <!-- Панель даты и кнопки -->
+                        <StackPanel DockPanel.Dock="Right" 
+                                    Orientation="Horizontal" 
+                                    VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal" 
+                                        VerticalAlignment="Center"
+                                        Margin="0,0,15,0">
+                                <TextBlock Text="📅 Дата:"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextColor}"/>
+                                <DatePicker x:Name="DatePickerOverview"
+                                            Width="160"
+                                            Height="35"
+                                            FontSize="13"
+                                            BorderBrush="{DynamicResource BorderColor}"
+                                            BorderThickness="1"
+                                            Padding="8"/>
+                            </StackPanel>
+
+                            <Button x:Name="BtnReload"
+                                    Content="🔄 Загрузить расписание"
+                                    Width="180"
+                                    Height="40"
+                                    Click="BtnReload_Click"
+                                    Style="{StaticResource BaseButtonStyle}">
+                                <Button.Effect>
+                                    <DropShadowEffect BlurRadius="6" 
+                                                      Opacity="0.2" 
+                                                      ShadowDepth="2"/>
+                                </Button.Effect>
+                            </Button>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!-- Основной контент -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2.5*"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="3.5*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Левая колонка - список классов -->
+                    <Border Grid.Column="0" 
+                            Background="{DynamicResource CardBackground}" 
+                            CornerRadius="8"
+                            Padding="15"
+                            BorderBrush="{DynamicResource BorderColor}"
+                            BorderThickness="1">
+                        <DockPanel>
+                            <Label DockPanel.Dock="Top"
+                                   Style="{StaticResource HeaderLabel}" 
+                                   Content="🏫 Список классов"
+                                   Margin="0,0,0,10"/>
+
+                            <TextBlock DockPanel.Dock="Bottom"
+                                       Text="* Выберите класс для просмотра деталей"
+                                       FontSize="11"
+                                       Foreground="{DynamicResource TextSecondary}"
+                                       Margin="0,10,0,0"
+                                       FontStyle="Italic"/>
+
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled">
+                                <ListBox x:Name="ClassBlocksList"
+                                         BorderThickness="0"
+                                         SelectionMode="Single"
+                                         Background="Transparent"
+                                         Foreground="{DynamicResource TextColor}"
+                                         SelectionChanged="ClassBlocksList_SelectionChanged">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource ClassCardBorderStyle}">
+                                                <StackPanel>
+                                                    <!-- Заголовок карточки -->
+                                                    <StackPanel Orientation="Horizontal" 
+                                                                Margin="0,0,0,8">
+                                                        <TextBlock Text="{Binding ClassName, Mode=OneWay}"
+                                                                   FontWeight="Bold"
+                                                                   FontSize="15"
+                                                                   Foreground="{DynamicResource AccentColor}"/>
+                                                        <TextBlock Text=" · "
+                                                                   Foreground="{DynamicResource TextSecondary}"
+                                                                   FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding LessonCount, Mode=OneWay}"
+                                                                   Foreground="{DynamicResource TextSecondary}"
+                                                                   FontSize="13"/>
+                                                        <TextBlock Text=" урока(ов)"
+                                                                   Foreground="{DynamicResource TextSecondary}"
+                                                                   FontSize="13"/>
+                                                    </StackPanel>
+
+                                                    <!-- Список уроков -->
+                                                    <ItemsControl ItemsSource="{Binding Lessons, Mode=OneWay}"
+                                                                  Margin="0,5,0,0">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal" 
+                                                                            Margin="0,4,0,0">
+                                                                    <Ellipse Width="6" 
+                                                                             Height="6" 
+                                                                             Fill="{DynamicResource AccentColor}"
+                                                                             VerticalAlignment="Center"
+                                                                             Margin="0,0,8,0"/>
+                                                                    <TextBlock Text="{Binding ., Mode=OneWay}"
+                                                                               FontSize="13"
+                                                                               TextWrapping="Wrap"
+                                                                               Foreground="{DynamicResource TextColor}"/>
+                                                                </StackPanel>
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Разделитель -->
+                    <Rectangle Grid.Column="1" 
+                               Fill="Transparent"/>
+
+                    <!-- Правая колонка - детали -->
+                    <Border Grid.Column="2" 
+                            Background="{DynamicResource CardBackground}" 
+                            CornerRadius="8"
+                            Padding="15"
+                            BorderBrush="{DynamicResource BorderColor}"
+                            BorderThickness="1">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Заголовок деталей -->
+                            <StackPanel Grid.Row="0" 
+                                        Orientation="Horizontal" 
+                                        Margin="0,0,0,12">
+                                <TextBlock Text="📋" 
+                                           FontSize="18"
+                                           Margin="0,0,8,0"
+                                           VerticalAlignment="Center"/>
+                                <TextBlock x:Name="DetailsHeader"
+                                           FontFamily="Segoe UI"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Text="Выберите класс слева"
+                                           Foreground="{DynamicResource TextColor}"/>
+                            </StackPanel>
+
+                            <!-- Таблица с деталями -->
+                            <Border Grid.Row="1" 
+                                    Background="{DynamicResource CardBackground}"
+                                    CornerRadius="6"
+                                    BorderBrush="{DynamicResource BorderColor}"
+                                    BorderThickness="1"
+                                    Padding="1"
+                                    Margin="0,0,0,12">
+                                <DataGrid x:Name="DetailsGrid"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="True"
+                                          HeadersVisibility="Column"
+                                          GridLinesVisibility="None"
+                                          RowHeight="38"
+                                          AlternationCount="2"
+                                          CanUserResizeColumns="True"
+                                          CanUserAddRows="False"
+                                          CanUserDeleteRows="False"
+                                          Background="Transparent"
+                                          BorderThickness="0"
+                                          SelectionMode="Single"
+                                          SelectionUnit="FullRow">
+                                    <DataGrid.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                                                         Color="Transparent"/>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" 
+                                                         Color="Transparent"/>
+                                    </DataGrid.Resources>
+
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="🕐 Время"
+                                                            Binding="{Binding Time, Mode=OneWay}"
+                                                            Width="100">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="FontWeight" Value="Medium"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="📚 Предмет"
+                                                            Binding="{Binding Discipline, Mode=OneWay}"
+                                                            Width="*">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="👨‍🏫 Учитель"
+                                                            Binding="{Binding Teacher, Mode=OneWay}"
+                                                            Width="200">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+
+                                        <DataGridTextColumn Header="🏢 Аудитория"
+                                                            Binding="{Binding Auditorium, Mode=OneWay}"
+                                                            Width="120">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+
+                            <!-- Панель действий -->
+                            <Border Grid.Row="2"
+                                    Background="{DynamicResource CardBackground}"
+                                    CornerRadius="6"
+                                    BorderBrush="{DynamicResource BorderColor}"
+                                    BorderThickness="1"
+                                    Padding="12"
+                                    Margin="0,0,0,12">
+                                <StackPanel Orientation="Horizontal"
+                                            HorizontalAlignment="Right">
+                                    <Button x:Name="BtnAddLesson" 
+                                            Content="➕ Добавить урок"
+                                            Width="140" 
+                                            Height="35" 
+                                            Margin="0,0,8,0"
+                                            Style="{StaticResource SmallButtonStyle}"
+                                            Click="BtnAddLesson_Click"/>
+
+                                    <Button x:Name="BtnEditLesson" 
+                                            Content="✏️ Изменить"
+                                            Width="100" 
+                                            Height="35" 
+                                            Margin="0,0,8,0"
+                                            Style="{StaticResource SmallButtonStyle}"
+                                            Click="BtnEditLesson_Click"/>
+
+                                    <Button x:Name="BtnDeleteLesson" 
+                                            Content="🗑️ Удалить"
+                                            Width="100" 
+                                            Height="35"
+                                            Style="{StaticResource SmallButtonStyle}"
+                                            Click="BtnDeleteLesson_Click"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Панель информации -->
+                            <Border Grid.Row="3"
+                                    Background="{DynamicResource CardBackground}"
+                                    CornerRadius="6"
+                                    BorderBrush="{DynamicResource BorderColor}"
+                                    BorderThickness="1"
+                                    Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="📖 Дополнительная информация"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Foreground="{DynamicResource TextColor}"
+                                               Margin="0,0,0,10"/>
+
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="10"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Первая колонка -->
+                                        <Button Grid.Column="0" Grid.Row="0"
+                                                Content="📚 Подробнее об уроках"
+                                                Style="{StaticResource InfoButtonStyle}"
+                                                Click="BtnMoreLessons_Click"/>
+
+                                        <Button Grid.Column="0" Grid.Row="1"
+                                                Content="👨‍🏫 Подробнее об учителях"
+                                                Style="{StaticResource InfoButtonStyle}"
+                                                Margin="0,8,0,0"
+                                                Click="BtnMoreTeachers_Click"/>
+
+                                        <!-- Вторая колонка -->
+                                        <Button Grid.Column="2" Grid.Row="0"
+                                                Content="👥 Подробнее о группах"
+                                                Style="{StaticResource InfoButtonStyle}"
+                                                Click="BtnMoreGroups_Click"/>
+
+                                        <Button Grid.Column="2" Grid.Row="1"
+                                                Content="🏢 Подробнее об аудиториях"
+                                                Style="{StaticResource InfoButtonStyle}"
+                                                Margin="0,8,0,0"
+                                                Click="BtnMoreAuditoriums_Click"/>
+
+                                        <!-- Третья колонка -->
+                                        <Button Grid.Column="4" Grid.Row="0"
+                                                Content="📊 Подробнее о программе"
+                                                Style="{StaticResource InfoButtonStyle}"
+                                                Click="BtnMoreProgram_Click"/>
+
+                                        <Button Grid.Column="4" Grid.Row="1"
+                                                Content="🎓 Подробнее о классах"
+                                                Style="{StaticResource InfoButtonStyle}"
+                                                Margin="0,8,0,0"
+                                                Click="BtnMoreClasses_Click"/>
+                                    </Grid>
+
+                                    <Button Content="🎯 Подробнее о назначении учителей"
+                                            Style="{StaticResource InfoButtonStyle}"
+                                            Margin="0,12,0,0"
+                                            Click="BtnMoreTeachingAssigment_Click" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
