@@ -5,62 +5,344 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFPPShall"
         mc:Ignorable="d"
-        Title="FormLogin" Height="450" Width="800">
-    <Grid Margin="20">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+        Title="Авторизация" Height="840" Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#F5F7FA">
 
-        <!-- Заголовок -->
-        <TextBlock Grid.Row="0"
-                   Text="🔐 Выберите роль"
-                   FontSize="18"
-                   FontWeight="Bold"
+    <Window.Resources>
+        <!-- Стили для кнопок -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="20,10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Opacity" Value="0.9"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.02" ScaleY="1.02"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Border" Property="Opacity" Value="0.8"/>
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="0.98" ScaleY="0.98"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для TextBox/PasswordBox -->
+        <Style x:Key="ModernInput" TargetType="Control">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E1E8ED"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Control">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CaptchaBox" TargetType="Border">
+            <Setter Property="Background" Value="#F0F2F5"/>
+            <Setter Property="BorderBrush" Value="#E1E8ED"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+        </Style>
+
+        <!-- Стиль для поля ввода капчи -->
+        <Style x:Key="CaptchaInput" TargetType="TextBox">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E1E8ED"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="8">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="12,10"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Стиль для ComboBox -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#E1E8ED"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <!-- Фоновый градиент -->
+        <Grid.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="#F5F7FA" Offset="0"/>
+                <GradientStop Color="#E9EEF3" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Border Margin="20" Background="White" CornerRadius="16">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.1"/>
+            </Border.Effect>
+
+            <Grid Margin="30">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок -->
+                <Border Grid.Row="0" 
+            Background="#4A90E2" 
+            CornerRadius="8" 
+            Height="80" 
+            Margin="0,0,0,30">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="🔐 Добро пожаловать"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Foreground="White"
+                       HorizontalAlignment="Center"/>
+                        <TextBlock Text="Выберите способ входа"
+                       FontSize="12"
+                       Foreground="#E8F0FE"
+                       HorizontalAlignment="Center"
+                       Margin="0,5,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Роль -->
+                <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                    <TextBlock Text="👥 Роль пользователя" 
+                   FontWeight="SemiBold"
                    Foreground="#2C3E50"
-                   HorizontalAlignment="Center"
-                   Margin="0,0,0,20"/>
+                   Margin="0,0,0,8"/>
+                    <ComboBox x:Name="CmbRole" 
+                  SelectionChanged="CmbRole_SelectionChanged">
+                        <ComboBoxItem Content="👨‍🏫 Учитель" Tag="123"/>
+                        <ComboBoxItem Content="🛠️ Администратор" Tag="321"/>
+                        <ComboBoxItem Content="👤 Ученик" Tag="" IsEnabled="False" Opacity="0.5">
+                            <ComboBoxItem.ToolTip>
+                                <ToolTip Content="Для учеников используйте отдельную кнопку входа"/>
+                            </ComboBoxItem.ToolTip>
+                        </ComboBoxItem>
+                    </ComboBox>
+                </StackPanel>
 
-        <!-- Роль -->
-        <StackPanel Grid.Row="1" Margin="0,0,0,10">
-            <TextBlock Text="Роль:" Margin="0,0,0,5"/>
-            <ComboBox x:Name="CmbRole" Height="30">
-                <ComboBoxItem Content="👨‍🏫 Учитель" Tag="123"/>
-                <ComboBoxItem Content="🛠️ Администратор" Tag="321"/>
-                <ComboBoxItem Content="👤 Ученик" Tag="" IsEnabled="False" Opacity="0.5"/>
-            </ComboBox>
-        </StackPanel>
+                <!-- Пароль (только для учителя/админа) -->
+                <StackPanel Grid.Row="2" Margin="0,0,0,20" 
+                x:Name="PasswordPanel" Visibility="Visible">
+                    <TextBlock Text="🔑 Пароль" 
+                   FontWeight="SemiBold"
+                   Foreground="#2C3E50"
+                   Margin="0,0,0,8"/>
+                    <PasswordBox x:Name="TxtPassword" 
+                     Height="45"
+                     FontSize="14"
+                     Background="White"
+                     BorderBrush="#E1E8ED"
+                     BorderThickness="1"
+                     Padding="12,10">
+                        <PasswordBox.Style>
+                            <Style TargetType="PasswordBox">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="PasswordBox">
+                                            <Border Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="8">
+                                                <ScrollViewer x:Name="PART_ContentHost" Margin="12,10"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </PasswordBox.Style>
+                    </PasswordBox>
 
-        <!-- Пароль (только для учителя/админа) -->
-        <StackPanel Grid.Row="2" Margin="0,0,0,15">
-            <TextBlock Text="Пароль:" Margin="0,0,0,5"/>
-            <PasswordBox x:Name="TxtPassword" Height="30"/>
-        </StackPanel>
+                    <!-- Чекбокс показа пароля -->
+                    <CheckBox x:Name="ShowPasswordCheckBox" 
+                  Content="Показать пароль"
+                  Margin="0,8,0,0"
+                  Foreground="#7F8C8D"
+                  Checked="ShowPasswordCheckBox_Checked"
+                  Unchecked="ShowPasswordCheckBox_Unchecked"/>
+                </StackPanel>
 
-        <!-- Кнопка для школьников (всегда активна) -->
-        <Button Grid.Row="3"
-                x:Name="BtnStudent"
-                Content="👤 Зайти как школьник"
-                Height="35"
-                Margin="0,0,0,10"
-                Background="#3498DB"
-                Foreground="White"
-                BorderThickness="0"
-                FontWeight="SemiBold"
-                Click="BtnStudent_Click"/>
+                <!-- КАПЧА -->
+                <StackPanel Grid.Row="3" Margin="0,0,0,20" 
+                x:Name="CaptchaPanel" Visibility="Visible">
+                    <TextBlock Text="🤖 Проверка безопасности" 
+                   FontWeight="SemiBold"
+                   Foreground="#2C3E50"
+                   Margin="0,0,0,8"/>
 
-        <!-- Кнопка входа для учителя/админа -->
-        <Button Grid.Row="4"
-                x:Name="BtnLogin"
-                Content="Войти"
-                Height="35"
-                Background="#2ECC71"
-                Foreground="White"
-                BorderThickness="0"
-                FontWeight="SemiBold"
-                Click="BtnLogin_Click"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Поле для ввода капчи -->
+                        <TextBox x:Name="TxtCaptcha" 
+                 Grid.Column="0"
+                 Height="45"
+                 FontSize="14"
+                 Background="White"
+                 BorderBrush="#E1E8ED"
+                 BorderThickness="1"
+                 Padding="12,10"
+                 VerticalContentAlignment="Center"
+                 KeyDown="TxtCaptcha_KeyDown"/>
+
+                        <!-- Кнопка обновления капчи -->
+                        <Button x:Name="BtnRefreshCaptcha"
+                    Grid.Column="1"
+                    Width="45"
+                    Height="45"
+                    Margin="10,0,0,0"
+                    Background="#E74C3C"
+                    Foreground="White"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="BtnRefreshCaptcha_Click"
+                    ToolTip="Обновить капчу">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                                        <TextBlock Text="⟳" 
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+
+                    <!-- Отображение капчи -->
+                    <Border x:Name="CaptchaDisplay"
+                Style="{StaticResource CaptchaBox}"
+                Height="60"
+                Margin="0,10,0,0">
+                        <TextBlock x:Name="TxtCaptchaCode"
+                       Text=""
+                       FontSize="28"
+                       FontWeight="Bold"
+                       FontFamily="Courier New"
+                       Foreground="#2C3E50"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       TextAlignment="Center"/>
+                    </Border>
+
+                    <TextBlock x:Name="TxtCaptchaMessage"
+                   FontSize="11"
+                   Foreground="#E74C3C"
+                   Margin="0,5,0,0"
+                   Visibility="Collapsed"/>
+                </StackPanel>
+
+                <!-- Кнопка для школьников -->
+                <Button Grid.Row="4"
+            x:Name="BtnStudent"
+            Content="👤 Войти как ученик"
+            Style="{StaticResource ModernButton}"
+            Background="#3498DB"
+            Margin="0,0,0,12"
+            Click="BtnStudent_Click"/>
+
+                <!-- Кнопка входа для учителя/админа -->
+                <Button Grid.Row="5"
+            x:Name="BtnLogin"
+            Content="➡️ Войти в систему"
+            Style="{StaticResource ModernButton}"
+            Background="#2ECC71"
+            Margin="0,0,0,12"
+            Click="BtnLogin_Click"/>
+
+                <!-- Информационная панель -->
+                <Border Grid.Row="6"
+            Background="#F8F9FA"
+            CornerRadius="8"
+            Padding="12"
+            Margin="0,10,0,0">
+                    <StackPanel>
+                        <TextBlock Text="ℹ️ Информация о доступе" 
+                       FontWeight="SemiBold"
+                       FontSize="11"
+                       Foreground="#7F8C8D"
+                       Margin="0,0,0,5"/>
+                        <TextBlock Text="Учитель: пароль 123 | Администратор: пароль 321"
+                       FontSize="10"
+                       Foreground="#95A5A6"
+                       TextWrapping="Wrap"/>
+                        <TextBlock Text="Ученики входят без пароля через отдельную кнопку"
+                       FontSize="10"
+                       Foreground="#95A5A6"
+                       TextWrapping="Wrap"
+                       Margin="0,3,0,0"/>
+                        <TextBlock Text="Для защиты от ботов введите код с картинки"
+                       FontSize="10"
+                       Foreground="#95A5A6"
+                       TextWrapping="Wrap"
+                       Margin="0,3,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
     </Grid>
 </Window>

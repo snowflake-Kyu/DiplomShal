@@ -33,7 +33,7 @@ namespace WPFPPShall
     {
 
         private string connectionString =
-            "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;";
+            "Data Source=kpkserver.kpk.local;Initial Catalog=KP_2024_Shalamov;Persist Security Info=True;User ID=user;Password=1234567";
 
         // здесь будем хранить полное расписание на день
         private DataTable _scheduleTable;
@@ -50,6 +50,8 @@ namespace WPFPPShall
             {
                 InitializeComponent();
                 _userRole = userRole;
+
+                ConfigureButtonsByRole();
 
                 // Проверка, что DatePicker не null
                 if (DatePickerOverview == null)
@@ -71,6 +73,79 @@ namespace WPFPPShall
                 // Важно: закрываем окно, чтобы оно не пыталось показаться
                 Close();
                 throw; // Пробрасываем исключение дальше
+            }
+        }
+
+        private void ConfigureButtonsByRole()
+        {
+            if (_userRole == 1) // Ученик
+            {
+                // Скрываем кнопки управления расписанием
+                BtnAddLesson.Visibility = Visibility.Collapsed;
+                BtnEditLesson.Visibility = Visibility.Collapsed;
+                BtnDeleteLesson.Visibility = Visibility.Collapsed;
+
+                // Дополнительно: можно изменить заголовок или добавить информационное сообщение
+                // Например, добавим текстовую подсказку
+                var infoText = new TextBlock
+                {
+                    Text = "ℹ️ Для учеников доступ только для просмотра",
+                    FontSize = 11,
+                    Foreground = (SolidColorBrush)FindResource("TextSecondary"),
+                    FontStyle = FontStyles.Italic,
+                    Margin = new Thickness(0, 8, 0, 0),
+                    HorizontalAlignment = HorizontalAlignment.Center
+                };
+
+                // Находим панель с кнопками и добавляем подсказку
+                var buttonPanel = BtnAddLesson.Parent as StackPanel;
+                if (buttonPanel != null)
+                {
+                    buttonPanel.Children.Add(infoText);
+                }
+            }
+            else if (_userRole == 2) // Учитель
+            {
+                // Для учителя можно оставить все кнопки, но добавить ограничения
+                // Например, учитель может редактировать только свои уроки
+                // Это можно реализовать позже
+
+                // Можно добавить подсказку для учителя
+                var infoText = new TextBlock
+                {
+                    Text = "✏️ Учитель может редактировать расписание",
+                    FontSize = 11,
+                    Foreground = (SolidColorBrush)FindResource("SuccessColor"),
+                    FontStyle = FontStyles.Italic,
+                    Margin = new Thickness(0, 8, 0, 0),
+                    HorizontalAlignment = HorizontalAlignment.Center
+                };
+
+                var buttonPanel = BtnAddLesson.Parent as StackPanel;
+                if (buttonPanel != null)
+                {
+                    buttonPanel.Children.Add(infoText);
+                }
+            }
+            else if (_userRole == 3) // Администратор
+            {
+                // Для администратора все кнопки видны
+                // Можно добавить подсказку
+                var infoText = new TextBlock
+                {
+                    Text = "🔧 Администратор: полный доступ",
+                    FontSize = 11,
+                    Foreground = (SolidColorBrush)FindResource("AccentColor"),
+                    FontStyle = FontStyles.Italic,
+                    Margin = new Thickness(0, 8, 0, 0),
+                    HorizontalAlignment = HorizontalAlignment.Center
+                };
+
+                var buttonPanel = BtnAddLesson.Parent as StackPanel;
+                if (buttonPanel != null)
+                {
+                    buttonPanel.Children.Add(infoText);
+                }
             }
         }
 

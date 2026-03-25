@@ -12,7 +12,7 @@ namespace WPFPPShall.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.13.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.10.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -31,6 +31,17 @@ namespace WPFPPShall.Properties {
         public string KP_2024_ShalamovConnectionString {
             get {
                 return ((string)(this["KP_2024_ShalamovConnectionString"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=kpkserver.kpk.local;Initial Catalog=KP_2024_Shalamov;Persist Security" +
+            " Info=True;User ID=user;Password=1234567")]
+        public string KP_2024_ShalamovConnectionString1 {
+            get {
+                return ((string)(this["KP_2024_ShalamovConnectionString1"]));
             }
         }
     }
