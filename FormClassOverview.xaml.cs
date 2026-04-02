@@ -33,7 +33,7 @@ namespace WPFPPShall
     {
 
         private string connectionString =
-            "Data Source=kpkserver.kpk.local;Initial Catalog=KP_2024_Shalamov;Persist Security Info=True;User ID=user;Password=1234567";
+            "Data Source=kpkserver.kpk.local;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;";
 
         // здесь будем хранить полное расписание на день
         private DataTable _scheduleTable;
@@ -80,13 +80,10 @@ namespace WPFPPShall
         {
             if (_userRole == 1) // Ученик
             {
-                // Скрываем кнопки управления расписанием
                 BtnAddLesson.Visibility = Visibility.Collapsed;
                 BtnEditLesson.Visibility = Visibility.Collapsed;
                 BtnDeleteLesson.Visibility = Visibility.Collapsed;
 
-                // Дополнительно: можно изменить заголовок или добавить информационное сообщение
-                // Например, добавим текстовую подсказку
                 var infoText = new TextBlock
                 {
                     Text = "ℹ️ Для учеников доступ только для просмотра",
