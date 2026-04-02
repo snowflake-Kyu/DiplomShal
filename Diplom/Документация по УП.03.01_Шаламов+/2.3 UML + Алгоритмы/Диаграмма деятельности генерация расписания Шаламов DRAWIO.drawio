@@ -1,0 +1,115 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/27.0.9 Chrome/134.0.6998.205 Electron/35.4.0 Safari/537.36" version="27.0.9">
+  <diagram name="Страница-1" id="BOgINUZJi9wrp-NE-cQs">
+    <mxGraphModel dx="2237" dy="833" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-1" value="" style="shape=waypoint;sketch=0;fillStyle=solid;size=6;pointerEvents=1;points=[];fillColor=none;resizable=0;rotatable=0;perimeter=centerPerimeter;snapToPoint=1;" parent="1" vertex="1">
+          <mxGeometry x="60" y="70" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-2" value="Открыть приложение школы" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="160" y="52.5" width="170" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-5" value="Процесс генерации расписания (роль: администратор)&lt;div&gt;Шаламов Сергей Андреевич&lt;/div&gt;" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="-50" y="10" width="331" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-6" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.8;exitY=0.85;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uog1Iy0v2hLO1m0T8TVk-1" target="uog1Iy0v2hLO1m0T8TVk-2" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="100" y="150" as="sourcePoint" />
+            <mxPoint x="150" y="100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-11" value="" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};rotation=90;fillColor=light-dark(#0a0a0a, #ededed);" parent="1" vertex="1">
+          <mxGeometry x="240" y="120" width="10" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-13" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="244.8" y="107.5" as="sourcePoint" />
+            <mxPoint x="244.8" y="155" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-14" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="uog1Iy0v2hLO1m0T8TVk-11" target="uog1Iy0v2hLO1m0T8TVk-15" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="155" y="230" as="sourcePoint" />
+            <mxPoint x="160" y="200" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="230" y="198" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-15" value="Генерировать новое расписание" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="50" y="142.5" width="110" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-16" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="uog1Iy0v2hLO1m0T8TVk-15" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="59" y="230" as="sourcePoint" />
+            <mxPoint x="-10" y="198" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-17" value="Нет" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" parent="1" vertex="1">
+          <mxGeometry y="170" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-18" value="Нажать кнопку &quot;Отмена&quot;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="-180" y="170" width="170" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-19" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="uog1Iy0v2hLO1m0T8TVk-11" target="uog1Iy0v2hLO1m0T8TVk-20" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="255" y="170" as="sourcePoint" />
+            <mxPoint x="260" y="290" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="255" y="200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-20" value="Открыть форму для генерации расписания" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="170" y="290" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-21" value="" style="endArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="uog1Iy0v2hLO1m0T8TVk-15" target="uog1Iy0v2hLO1m0T8TVk-20" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="125.00000000000023" y="250" as="sourcePoint" />
+            <mxPoint x="180.00000000000023" y="320" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="105" y="320" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-22" value="Начать генерацию" style="text;html=1;whiteSpace=wrap;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="90" y="305" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-23" value="Выбрать дату и учителей, работающих в этот день" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="170" y="390" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-25" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="uog1Iy0v2hLO1m0T8TVk-20" target="uog1Iy0v2hLO1m0T8TVk-23" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="261" y="351" as="sourcePoint" />
+            <mxPoint x="260" y="417" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-28" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="uog1Iy0v2hLO1m0T8TVk-23" target="uog1Iy0v2hLO1m0T8TVk-29" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="264.58" y="450" as="sourcePoint" />
+            <mxPoint x="264.58" y="488" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-29" value="Нажать кнопку &quot;Генерировать&quot;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="170" y="480" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-31" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" parent="1" vertex="1">
+          <mxGeometry x="90" y="555" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="uog1Iy0v2hLO1m0T8TVk-32" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="uog1Iy0v2hLO1m0T8TVk-29" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="264.79" y="550" as="sourcePoint" />
+            <mxPoint x="120" y="570" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="255" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ScolD1X7MBZaoOCp1or3-1" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;" vertex="1" parent="1">
+          <mxGeometry x="40" y="65" width="30" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
