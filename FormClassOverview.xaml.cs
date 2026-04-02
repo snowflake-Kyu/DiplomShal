@@ -33,7 +33,7 @@ namespace WPFPPShall
     {
 
         private string connectionString =
-            "Data Source=kpkserver.kpk.local;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;";
+            "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;";
 
         private DataTable _scheduleTable;
 
