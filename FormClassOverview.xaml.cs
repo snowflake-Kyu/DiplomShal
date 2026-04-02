@@ -35,7 +35,6 @@ namespace WPFPPShall
         private string connectionString =
             "Data Source=kpkserver.kpk.local;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;";
 
-        // здесь будем хранить полное расписание на день
         private DataTable _scheduleTable;
 
         private int _userRole;
