@@ -1,0 +1,13 @@
+﻿
+    Трек: КОД 09.02.07-2-2026 «Программист»
+Установка и настройка необходимого ПО (Ред БД, Ред Эксперт, Visual Studio Code)
+	https://red-soft.ktalk.ru/recordings/oVa97fkMYPMi7MfHySw1
+
+Разработка базы данных, импорт данных, формирование ER - диаграммы
+	https://red-soft.ktalk.ru/recordings/mdFv2Q266NvIGABBAzX1
+
+Создание приложения (подключение БД, окно входа, разделение ролей. Разработка основного окна товаров (CRUD).
+	https://red-soft.ktalk.ru/recordings/DQW5shEn3U2e3C5p2Tzg
+
+Реализация фильтрации, сортировки, поиска на основных окнах
+	https://red-soft.ktalk.ru/recordings/6CHlXwfXwC17ddACxIbL
