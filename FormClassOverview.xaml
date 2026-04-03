@@ -256,6 +256,19 @@
                                                       ShadowDepth="2"/>
                                 </Button.Effect>
                             </Button>
+                            <Button x:Name="BtnOpenReportWindow"
+                                    Content="Формирование отчетов"
+                                    Width="180"
+                                    Height="40"
+                                    Click="BtnOpenReportWindow_Click"
+                                    Style="{StaticResource BaseButtonStyle}"
+                                    Margin="5">
+                                <Button.Effect>
+                                    <DropShadowEffect BlurRadius="6" 
+                                                      Opacity="0.2" 
+                                                      ShadowDepth="2"/>
+                                </Button.Effect>
+                            </Button>
                         </StackPanel>
                     </DockPanel>
                 </Border>

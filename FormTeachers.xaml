@@ -5,11 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFPPShall"
         mc:Ignorable="d"
-        Title="FormTeachers" Height="450" Width="800">
+        Title="Учителя" Height="550" Width="900"
+        WindowStartupLocation="CenterScreen">
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
@@ -20,37 +24,36 @@
 
         <!-- Заголовок -->
         <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-                   Text="Учителя"
+                   Text="👨‍🏫 Учителя"
                    FontFamily="Segoe UI"
-                   FontSize="16"
+                   FontSize="18"
                    FontWeight="SemiBold"
                    Margin="0,0,0,8"/>
 
         <!-- Панель фильтрации -->
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="2"
-            Orientation="Horizontal"
-            Margin="0,34,0,8">
+        <WrapPanel Grid.Row="1" Grid.ColumnSpan="2"
+                   Orientation="Horizontal"
+                   Margin="0,0,0,12"
+                   VerticalAlignment="Center">
 
-            <!-- Фильтр по предметам -->
+            <TextBlock Text="Фильтр по предмету:" VerticalAlignment="Center" Margin="0,0,8,0"/>
             <ComboBox x:Name="CbFilterDiscipline"
-              Width="200"
-              Margin="0,0,8,0"
-              SelectionChanged="CbFilterDiscipline_SelectionChanged"
-              DisplayMemberPath="Name"
-              SelectedValuePath="DisciplineID"/>
+                      Width="200"
+                      Margin="0,0,16,0"
+                      SelectionChanged="CbFilterDiscipline_SelectionChanged"
+                      DisplayMemberPath="Name"
+                      SelectedValuePath="DisciplineID"/>
 
-            <!-- Подпись + фильтр по ФИО -->
-            <TextBlock Text="Фильтр по ФИО:"
-               VerticalAlignment="Center"
-               Margin="0,0,6,0"/>
+            <TextBlock Text="Фильтр по ФИО:" VerticalAlignment="Center" Margin="0,0,8,0"/>
             <TextBox x:Name="TxtFilterTeacher"
-             Width="200"
-             Height="24"
-             TextChanged="TxtFilterTeacher_TextChanged"/>
-        </StackPanel>
+                     Width="200"
+                     Height="26"
+                     VerticalContentAlignment="Center"
+                     TextChanged="TxtFilterTeacher_TextChanged"/>
+        </WrapPanel>
 
         <!-- Таблица учителей -->
-        <Border Grid.Row="1" Grid.Column="0"
+        <Border Grid.Row="2" Grid.Column="0"
                 Margin="0,0,8,0"
                 Background="White"
                 CornerRadius="8"
@@ -63,59 +66,112 @@
                       GridLinesVisibility="Horizontal"
                       SelectionMode="Single"
                       SelectionUnit="FullRow"
-                      RowHeight="26"
+                      RowHeight="28"
                       AlternationCount="2"
                       SelectionChanged="TeachersGrid_SelectionChanged">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="ID" Binding="{Binding TeacherID}" Width="50"/>
                     <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}" Width="*"/>
-                    <DataGridTextColumn Header="Предмет" Binding="{Binding DisciplineName}" Width="160"/>
-                    <DataGridTextColumn Header="Аудитория" Binding="{Binding AuditoriumName}" Width="120"/>
-                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="180"/>
+                    <DataGridTextColumn Header="Предмет" Binding="{Binding DisciplineName}" Width="140"/>
+                    <DataGridTextColumn Header="Аудитория" Binding="{Binding AuditoriumName}" Width="100"/>
+                    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="160"/>
                 </DataGrid.Columns>
             </DataGrid>
         </Border>
 
-        <!-- Панель редактирования (только ФИО и Email) -->
-        <Border Grid.Row="1" Grid.Column="1"
-                Background="White"
+        <!-- Панель редактирования -->
+        <Border Grid.Row="2" Grid.Column="1"
+                Background="#F9FAFB"
                 CornerRadius="8"
                 BorderBrush="#D1D5DB" BorderThickness="1"
-                Padding="10">
+                Padding="12">
             <Grid>
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="70"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="ФИО:" Margin="0,0,6,6" VerticalAlignment="Center"/>
-                <TextBox x:Name="TxtFullName" Grid.Row="0" Grid.Column="1" Height="24" Margin="10,0,0,6"/>
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="ФИО:" 
+                           Margin="0,0,6,10" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtFullName" Grid.Row="0" Grid.Column="1" 
+                         Height="28" Margin="10,0,0,10" VerticalContentAlignment="Center"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0" Text="Email:" Margin="0,0,6,6" VerticalAlignment="Center"/>
-                <TextBox x:Name="TxtEmail" Grid.Row="1" Grid.Column="1" Height="24" Margin="10,0,0,6"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Email:" 
+                           Margin="0,0,6,10" VerticalAlignment="Center" FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtEmail" Grid.Row="1" Grid.Column="1" 
+                         Height="28" Margin="10,0,0,10" VerticalContentAlignment="Center"/>
 
-                <!-- Примечание: предмет/аудитория редактируются в форме назначений -->
-                <TextBlock Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap"
-                           Foreground="Gray" Margin="0,8,0,0">
-                    Примечание: предметы и аудитории для учителя настраиваются в разделе назначений (TeachingAssignment).
+                <Separator Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,10"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap"
+                           Foreground="#6B7280" FontSize="11" TextAlignment="Center"
+                           Margin="0,8,0,0">
+                    ℹ️ Предметы и аудитории для учителя настраиваются в разделе назначений
                 </TextBlock>
             </Grid>
         </Border>
 
-        <!-- Нижние кнопки -->
-        <StackPanel Grid.Row="2" Grid.ColumnSpan="2"
+        <!-- Панель навигации (постраничный вывод) -->
+        <Border Grid.Row="3" Grid.ColumnSpan="2"
+                Background="#F3F4F6" CornerRadius="6"
+                Margin="0,12,0,0" Padding="8">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="BtnFirst" Content="⏮ Первая" Width="80" Height="28" Margin="2" Click="BtnFirst_Click"/>
+                <Button x:Name="BtnPrev" Content="◀ Назад" Width="80" Height="28" Margin="2" Click="BtnPrev_Click"/>
+
+                <TextBlock x:Name="TbPageInfo" Text="Страница 1 из 1" 
+                           VerticalAlignment="Center" Margin="15,0" FontWeight="SemiBold"/>
+
+                <Button x:Name="BtnNext" Content="Вперед ▶" Width="80" Height="28" Margin="2" Click="BtnNext_Click"/>
+                <Button x:Name="BtnLast" Content="Последняя ⏭" Width="80" Height="28" Margin="2" Click="BtnLast_Click"/>
+
+                <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" 
+                           Margin="15,0" Height="20"/>
+
+                <TextBlock Text="Записей:" VerticalAlignment="Center" Margin="8,0,4,0"/>
+                <ComboBox x:Name="CbPageSize" Width="65" Height="26" SelectionChanged="CbPageSize_SelectionChanged">
+                    <ComboBoxItem Content="5"/>
+                    <ComboBoxItem Content="10" IsSelected="True"/>
+                    <ComboBoxItem Content="15"/>
+                    <ComboBoxItem Content="20"/>
+                    <ComboBoxItem Content="50"/>
+                    <ComboBoxItem Content="Все"/>
+                </ComboBox>
+
+                <TextBlock x:Name="TbTotalCount" Text="(всего 0)" 
+                           VerticalAlignment="Center" Margin="12,0,0,0" Foreground="Gray" FontSize="11"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Нижние кнопки действий -->
+        <StackPanel Grid.Row="4" Grid.ColumnSpan="2"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Margin="0,8,0,0">
-            <Button x:Name="BtnAdd" Content="Добавить нового" Width="130" Height="26" Margin="0,0,6,0" Click="BtnAdd_Click"/>
-            <Button x:Name="BtnSave" Content="Сохранить" Width="100" Height="26" Margin="0,0,6,0" Click="BtnSave_Click"/>
-            <Button x:Name="BtnDelete" Content="Удалить" Width="100" Height="26" Margin="0,0,6,0" Click="BtnDelete_Click"/>
-            <Button x:Name="BtnClose" Content="Закрыть" Width="90" Height="26" Click="BtnClose_Click"/>
+                    Margin="0,12,0,0">
+            <Button x:Name="BtnAdd" Content="➕ Добавить" Width="110" Height="30" 
+                    Margin="0,0,8,0" Click="BtnAdd_Click"
+                    Background="#4CAF50" Foreground="White" Cursor="Hand">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="4"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            <Button x:Name="BtnSave" Content="💾 Сохранить" Width="100" Height="30" 
+                    Margin="0,0,8,0" Click="BtnSave_Click"
+                    Background="#2196F3" Foreground="White" Cursor="Hand"/>
+            <Button x:Name="BtnDelete" Content="🗑 Удалить" Width="100" Height="30" 
+                    Margin="0,0,8,0" Click="BtnDelete_Click"
+                    Background="#F44336" Foreground="White" Cursor="Hand"/>
+            <Button x:Name="BtnClose" Content="✖ Закрыть" Width="90" Height="30" 
+                    Click="BtnClose_Click"
+                    Background="#9E9E9E" Foreground="White" Cursor="Hand"/>
         </StackPanel>
     </Grid>
 </Window>

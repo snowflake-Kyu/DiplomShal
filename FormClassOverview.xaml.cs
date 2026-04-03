@@ -508,5 +508,11 @@ namespace WPFPPShall
         private void BtnMoreProgram_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Окно учебной программы");
         private void BtnMoreClasses_Click(object sender, RoutedEventArgs e) => MessageBox.Show("Окно классов");
 
+        private void BtnOpenReportWindow_Click(object sender, RoutedEventArgs e)
+        {
+            ReportWindow wnd = new ReportWindow();
+            wnd.Owner = this;
+            wnd.ShowDialog();
+        }
     }
 }

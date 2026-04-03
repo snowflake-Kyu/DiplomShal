@@ -25,12 +25,19 @@ namespace WPFPPShall
             "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;";
 
         //Data Source=kpkserver.kpk.local;Initial Catalog=KP_2024_Shalamov;Persist Security Info=True;User ID=user;Password=1234567
+        //Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;
 
         private DataTable _teachersTable;
         private DataTable _disciplinesTable;
         private DataTable _auditoriumsTable;
 
         private int _currentTeacherId = 0;
+
+        // Для пагинации
+        private DataTable _allTeachersTable;      // полные данные (без фильтра страниц)
+        private int _currentPage = 1;
+        private int _pageSize = 10;
+        private bool _showAll = false;
 
         public FormTeachers()
         {
@@ -93,47 +100,44 @@ namespace WPFPPShall
             {
                 conn.Open();
 
-                // если передан фильтр по предмету — используем WHERE EXISTS
                 string whereClause = "";
                 if (filterDisciplineId.HasValue)
                     whereClause = "WHERE EXISTS (SELECT 1 FROM TeachingAssignment ta WHERE ta.TeacherID = t.TeacherID AND ta.DisciplineID = @filterDid)";
 
                 string query = $@"
-SELECT
-    t.TeacherID,
-    t.FullName,
-    t.Email,
-    -- берем одну назначенную дисциплину/аудиторию через OUTER APPLY (TOP 1)
-    ta.DisciplineID,
-    td.Name AS DisciplineName,
-    ta.AuditoriumID,
-    a.Name AS AuditoriumName
-FROM Teacher t
-OUTER APPLY (
-    SELECT TOP 1 ta1.DisciplineID, ta1.AuditoriumID
-    FROM TeachingAssignment ta1
-    WHERE ta1.TeacherID = t.TeacherID
-    ORDER BY ta1.AssignmentID
-) ta
-LEFT JOIN Discipline td ON ta.DisciplineID = td.DisciplineID
-LEFT JOIN Auditorium a ON ta.AuditoriumID = a.AuditoriumID
-{whereClause}
-ORDER BY t.FullName;";
+                                    SELECT
+                                        t.TeacherID,
+                                        t.FullName,
+                                        t.Email,
+                                        ta.DisciplineID,
+                                        td.Name AS DisciplineName,
+                                        ta.AuditoriumID,
+                                        a.Name AS AuditoriumName
+                                    FROM Teacher t
+                                    OUTER APPLY (
+                                        SELECT TOP 1 ta1.DisciplineID, ta1.AuditoriumID
+                                        FROM TeachingAssignment ta1
+                                        WHERE ta1.TeacherID = t.TeacherID
+                                        ORDER BY ta1.AssignmentID
+                                    ) ta
+                                    LEFT JOIN Discipline td ON ta.DisciplineID = td.DisciplineID
+                                    LEFT JOIN Auditorium a ON ta.AuditoriumID = a.AuditoriumID
+                                    {whereClause}
+                                    ORDER BY t.FullName;";
 
                 SqlCommand cmd = new SqlCommand(query, conn);
                 if (filterDisciplineId.HasValue)
                     cmd.Parameters.AddWithValue("@filterDid", filterDisciplineId.Value);
 
                 SqlDataAdapter da = new SqlDataAdapter(cmd);
-
-                _teachersTable = new DataTable();
-                da.Fill(_teachersTable);
-
-                TeachersGrid.ItemsSource = _teachersTable.DefaultView;
+                _allTeachersTable = new DataTable();  // ← сохраняем все данные
+                da.Fill(_allTeachersTable);
             }
 
             ClearEditor();
-            ApplyTeacherFilter_LocalNameOnly(); // применяем локальный фильтр по ФИО, если есть
+
+            // Применяем локальный фильтр по ФИО (если есть)
+            ApplyTeacherFilter_LocalNameOnly();
         }
 
         private void ClearEditor()
@@ -147,13 +151,22 @@ ORDER BY t.FullName;";
         // локальная фильтрация по ФИО (RowFilter) — применяется поверх уже загруженного набора.
         private void ApplyTeacherFilter_LocalNameOnly()
         {
-            if (_teachersTable == null) return;
+            if (_allTeachersTable == null) return;
 
             string nameText = TxtFilterTeacher.Text.Trim().Replace("'", "''");
+
             if (string.IsNullOrEmpty(nameText))
-                _teachersTable.DefaultView.RowFilter = "";
+            {
+                _allTeachersTable.DefaultView.RowFilter = "";
+            }
             else
-                _teachersTable.DefaultView.RowFilter = $"FullName LIKE '%{nameText}%'";
+            {
+                _allTeachersTable.DefaultView.RowFilter = $"FullName LIKE '%{nameText}%'";
+            }
+
+            // После изменения фильтра сбрасываем на первую страницу и обновляем отображение
+            _currentPage = 1;
+            UpdatePagedView();
         }
 
         private void TxtFilterTeacher_TextChanged(object sender, TextChangedEventArgs e)
@@ -304,5 +317,145 @@ ORDER BY t.FullName;";
         {
             Close();
         }
+
+        #region Пагинация
+
+        /// <summary>
+        /// Обновляет отображение с учетом текущей страницы и размера страницы
+        /// </summary>
+        private void UpdatePagedView()
+        {
+            if (_allTeachersTable == null || _allTeachersTable.Rows.Count == 0)
+            {
+                TeachersGrid.ItemsSource = null;
+                TbPageInfo.Text = "Страница 0 из 0";
+                return;
+            }
+
+            int totalRows = _allTeachersTable.Rows.Count;
+            int totalPages = _showAll ? 1 : (int)Math.Ceiling((double)totalRows / _pageSize);
+
+            // Корректируем текущую страницу, если она выходит за пределы
+            if (_currentPage > totalPages)
+                _currentPage = totalPages;
+            if (_currentPage < 1)
+                _currentPage = 1;
+
+            if (_showAll)
+            {
+                // Показываем все записи
+                TeachersGrid.ItemsSource = _allTeachersTable.DefaultView;
+                TbPageInfo.Text = $"Все записи ({totalRows})";
+            }
+            else
+            {
+                // Вычисляем начальный и конечный индекс
+                int startIndex = (_currentPage - 1) * _pageSize;
+                int endIndex = Math.Min(startIndex + _pageSize, totalRows);
+
+                // Создаем копию таблицы только с нужными строками
+                DataTable pagedTable = _allTeachersTable.Clone();
+                for (int i = startIndex; i < endIndex; i++)
+                {
+                    pagedTable.ImportRow(_allTeachersTable.Rows[i]);
+                }
+
+                TeachersGrid.ItemsSource = pagedTable.DefaultView;
+                TbPageInfo.Text = $"Страница {_currentPage} из {totalPages} (всего {totalRows} записей)";
+            }
+
+            // Обновляем состояние кнопок
+            UpdateButtonsState();
+        }
+
+        /// <summary>
+        /// Обновляет активность кнопок навигации
+        /// </summary>
+        private void UpdateButtonsState()
+        {
+            if (_allTeachersTable == null || _allTeachersTable.Rows.Count == 0)
+            {
+                BtnFirst.IsEnabled = false;
+                BtnPrev.IsEnabled = false;
+                BtnNext.IsEnabled = false;
+                BtnLast.IsEnabled = false;
+                return;
+            }
+
+            if (_showAll)
+            {
+                BtnFirst.IsEnabled = false;
+                BtnPrev.IsEnabled = false;
+                BtnNext.IsEnabled = false;
+                BtnLast.IsEnabled = false;
+                return;
+            }
+
+            int totalRows = _allTeachersTable.Rows.Count;
+            int totalPages = (int)Math.Ceiling((double)totalRows / _pageSize);
+
+            BtnFirst.IsEnabled = _currentPage > 1;
+            BtnPrev.IsEnabled = _currentPage > 1;
+            BtnNext.IsEnabled = _currentPage < totalPages;
+            BtnLast.IsEnabled = _currentPage < totalPages;
+        }
+
+        // Обработчики кнопок
+        private void BtnFirst_Click(object sender, RoutedEventArgs e)
+        {
+            _currentPage = 1;
+            UpdatePagedView();
+        }
+
+        private void BtnPrev_Click(object sender, RoutedEventArgs e)
+        {
+            if (_currentPage > 1)
+            {
+                _currentPage--;
+                UpdatePagedView();
+            }
+        }
+
+        private void BtnNext_Click(object sender, RoutedEventArgs e)
+        {
+            int totalRows = _allTeachersTable.Rows.Count;
+            int totalPages = (int)Math.Ceiling((double)totalRows / _pageSize);
+
+            if (_currentPage < totalPages)
+            {
+                _currentPage++;
+                UpdatePagedView();
+            }
+        }
+
+        private void BtnLast_Click(object sender, RoutedEventArgs e)
+        {
+            int totalRows = _allTeachersTable.Rows.Count;
+            int totalPages = (int)Math.Ceiling((double)totalRows / _pageSize);
+            _currentPage = totalPages;
+            UpdatePagedView();
+        }
+
+        private void CbPageSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbPageSize.SelectedItem == null) return;
+
+            string selected = ((ComboBoxItem)CbPageSize.SelectedItem).Content.ToString();
+
+            if (selected == "Все")
+            {
+                _showAll = true;
+            }
+            else
+            {
+                _showAll = false;
+                _pageSize = int.Parse(selected);
+            }
+
+            _currentPage = 1;
+            UpdatePagedView();
+        }
+
+        #endregion
     }
 }
