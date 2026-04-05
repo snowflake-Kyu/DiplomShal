@@ -351,5 +351,82 @@ namespace WPFPPShall
                 throw;
             }
         }
+
+        private void BtnImport_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Microsoft.Win32.OpenFileDialog openDialog = new Microsoft.Win32.OpenFileDialog();
+                openDialog.Filter = "Excel files (*.xlsx;*.xls)|*.xlsx;*.xls";
+                openDialog.Title = "Выберите файл Excel для импорта";
+
+                if (openDialog.ShowDialog() == true)
+                {
+                    tbStatus.Text = "Импорт данных...";
+                    Cursor = System.Windows.Input.Cursors.Wait;
+
+                    DataTable importedData = ReadExcelFileOLEDB(openDialog.FileName);
+
+                    if (importedData != null && importedData.Rows.Count > 0)
+                    {
+                        dgReport.ItemsSource = importedData.DefaultView;
+                        tbStatus.Text = $"Импортировано строк: {importedData.Rows.Count}";
+                        MessageBox.Show($"Успешно импортировано {importedData.Rows.Count} строк.", "Импорт завершен", MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Файл не содержит данных или не удалось прочитать.", "Ошибка импорта", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        tbStatus.Text = "Импорт не выполнен";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка импорта: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                tbStatus.Text = "Ошибка импорта";
+            }
+            finally
+            {
+                Cursor = null;
+            }
+        }
+
+        private DataTable ReadExcelFileOLEDB(string filePath)
+        {
+            try
+            {
+                string connectionString = "";
+
+                // Определяем формат файла
+                if (filePath.EndsWith(".xlsx"))
+                    connectionString = $"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={filePath};Extended Properties='Excel 12.0 Xml;HDR=YES;IMEX=1'";
+                else if (filePath.EndsWith(".xls"))
+                    connectionString = $"Provider=Microsoft.Jet.OLEDB.4.0;Data Source={filePath};Extended Properties='Excel 8.0;HDR=YES;IMEX=1'";
+                else
+                    return null;
+
+                using (System.Data.OleDb.OleDbConnection conn = new System.Data.OleDb.OleDbConnection(connectionString))
+                {
+                    conn.Open();
+
+                    // Получаем первый лист
+                    System.Data.DataTable dtSchema = conn.GetOleDbSchemaTable(System.Data.OleDb.OleDbSchemaGuid.Tables, null);
+                    string sheetName = dtSchema.Rows[0]["TABLE_NAME"].ToString();
+
+                    string query = $"SELECT * FROM [{sheetName}]";
+                    System.Data.OleDb.OleDbDataAdapter adapter = new System.Data.OleDb.OleDbDataAdapter(query, conn);
+
+                    DataTable dt = new DataTable();
+                    adapter.Fill(dt);
+
+                    return dt;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка чтения Excel: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
+            }
+        }
     }
 }

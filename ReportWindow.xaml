@@ -74,11 +74,13 @@
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                     <Button x:Name="btnSearch" Content="Применить фильтры" Width="120" 
-                            Height="30" Margin="5" Click="BtnSearch_Click" Background="LightBlue"/>
+            Height="30" Margin="5" Click="BtnSearch_Click" Background="LightBlue"/>
                     <Button x:Name="btnReset" Content="Сбросить" Width="80" 
-                            Height="30" Margin="5" Click="BtnReset_Click"/>
+            Height="30" Margin="5" Click="BtnReset_Click"/>
+                    <Button x:Name="btnImport" Content="📂 Импорт из Excel" Width="130" 
+            Height="30" Margin="5" Click="BtnImport_Click" Background="LightYellow"/>
                     <Button x:Name="btnExport" Content="Экспорт в Excel" Width="120" 
-                            Height="30" Margin="5" Click="BtnExport_Click" Background="LightGreen"/>
+            Height="30" Margin="5" Click="BtnExport_Click" Background="LightGreen"/>
                 </StackPanel>
             </StackPanel>
         </Border>

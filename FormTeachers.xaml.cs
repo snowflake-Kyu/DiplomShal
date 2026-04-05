@@ -39,6 +39,8 @@ namespace WPFPPShall
         private int _pageSize = 10;
         private bool _showAll = false;
 
+        private TeacherDataIntegrity _integrityChecker;
+
         public FormTeachers()
         {
             InitializeComponent();
@@ -133,6 +135,15 @@ namespace WPFPPShall
                 _allTeachersTable = new DataTable();  // ← сохраняем все данные
                 da.Fill(_allTeachersTable);
             }
+
+            // Создаём или обновляем контроллер целостности
+            if (_integrityChecker == null)
+                _integrityChecker = new TeacherDataIntegrity(_allTeachersTable);
+            else
+                _integrityChecker.UpdateHash(_allTeachersTable);
+
+            // Показываем статус в заголовке окна
+            this.Title = $"👨‍🏫 Учителя - {_integrityChecker.StatusMessage}";
 
             ClearEditor();
 
@@ -457,5 +468,21 @@ namespace WPFPPShall
         }
 
         #endregion
+
+        private void ShowIntegrityDetails()
+        {
+            if (_integrityChecker != null)
+            {
+                MessageBox.Show(_integrityChecker.GetDetailedStatus(),
+                                "Контроль целостности данных",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+            }
+        }
+
+        private void BtnIntegrity_Click(object sender, RoutedEventArgs e)
+        {
+            ShowIntegrityDetails();
+        }
     }
 }

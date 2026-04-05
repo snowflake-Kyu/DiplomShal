@@ -1,55 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 namespace WPFPPShall
 {
-    /// <summary>
-    /// Логика взаимодействия для FormGroups.xaml
-    /// </summary>
     public partial class FormGroups : Window
     {
         private string connectionString =
             "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;";
 
         private DataTable _groupsTable;
-        private DataTable _classesTable;
-
         private int _currentGroupId = 0;
 
         public FormGroups()
         {
             InitializeComponent();
-            LoadClasses();
             LoadGroups();
-        }
+            LoadPieChart();
 
-        private void LoadClasses()
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(
-                    "SELECT ClassID, ClassName FROM SchoolClass ORDER BY ClassName", conn);
-
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
-                _classesTable = new DataTable();
-                da.Fill(_classesTable);
-
-                CbClass.ItemsSource = _classesTable.DefaultView;
-            }
+            // Скрываем комбобокс с классами, так как его нет в таблице
+            CbClass.Visibility = Visibility.Collapsed;
+            TextBlockClass.Visibility = Visibility.Collapsed;
         }
 
         private void LoadGroups()
@@ -58,15 +32,16 @@ namespace WPFPPShall
             {
                 conn.Open();
 
+                // Исправлено: используем реальные имена полей
                 string query = @"
                     SELECT 
-                        sg.GroupID,
-                        sg.GroupName
-                    FROM StudentGroup sg
-                    ORDER BY sg.GroupName;";
+                        GroupID,
+                        GroupName,
+                        GroupSize
+                    FROM StudentGroup
+                    ORDER BY GroupName;";
 
-                SqlCommand cmd = new SqlCommand(query, conn);
-                SqlDataAdapter da = new SqlDataAdapter(cmd);
+                SqlDataAdapter da = new SqlDataAdapter(query, conn);
                 _groupsTable = new DataTable();
                 da.Fill(_groupsTable);
 
@@ -76,30 +51,77 @@ namespace WPFPPShall
             ClearEditor();
         }
 
+        private void LoadPieChart()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                // Для круговой диаграммы: показываем распределение по размеру групп
+                string query = @"
+                    SELECT 
+                        GroupName,
+                        ISNULL(GroupSize, 1) AS GroupSize
+                    FROM StudentGroup
+                    ORDER BY GroupName";
+
+                SqlDataAdapter da = new SqlDataAdapter(query, conn);
+                DataTable dt = new DataTable();
+                da.Fill(dt);
+
+                var series = new SeriesCollection();
+                int totalGroups = dt.Rows.Count;
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    string groupName = row["GroupName"].ToString();
+                    int size = Convert.ToInt32(row["GroupSize"]);
+
+                    // Если размер не указан, ставим 1
+                    if (size <= 0) size = 1;
+
+                    series.Add(new PieSeries
+                    {
+                        Title = groupName,
+                        Values = new ChartValues<int> { size },
+                        DataLabels = true,
+                        LabelPoint = point => $"{point.Y} чел.",
+                        FontSize = 10
+                    });
+                }
+
+                GroupsPieChart.Series = series;
+                TbTotalGroups.Text = totalGroups.ToString();
+            }
+        }
+
         private void ClearEditor()
         {
             _currentGroupId = 0;
             TxtGroupName.Text = "";
-            if (CbClass.Items.Count > 0)
-                CbClass.SelectedIndex = 0;
+            TxtGroupSize.Text = "";
         }
 
         private void GroupsGrid_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            var rowView = GroupsGrid.SelectedItem as System.Data.DataRowView;
+            var rowView = GroupsGrid.SelectedItem as DataRowView;
             if (rowView == null)
             {
                 ClearEditor();
                 return;
             }
 
-            _currentGroupId = Convert.ToInt32(rowView["StudentGroupID"]); //Ошибка
+            // Исправлено: используем GroupID (без AS)
+            if (rowView.Row.Table.Columns.Contains("GroupID"))
+                _currentGroupId = Convert.ToInt32(rowView["GroupID"]);
+
             TxtGroupName.Text = rowView["GroupName"].ToString();
 
-            if (rowView["ClassID"] != DBNull.Value)
-                CbClass.SelectedValue = Convert.ToInt32(rowView["ClassID"]);
-            else if (CbClass.Items.Count > 0)
-                CbClass.SelectedIndex = 0;
+            // Добавляем загрузку размера группы
+            if (rowView.Row.Table.Columns.Contains("GroupSize") && rowView["GroupSize"] != DBNull.Value)
+                TxtGroupSize.Text = rowView["GroupSize"].ToString();
+            else
+                TxtGroupSize.Text = "";
         }
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
@@ -117,14 +139,16 @@ namespace WPFPPShall
                 return;
             }
 
-            if (CbClass.SelectedValue == null)
+            // Получаем размер группы (если введён)
+            int? groupSize = null;
+            if (!string.IsNullOrWhiteSpace(TxtGroupSize.Text))
             {
-                MessageBox.Show("Выберите класс.", "Ошибка",
-                                MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
+                if (int.TryParse(TxtGroupSize.Text, out int size))
+                    groupSize = size;
+                else
+                    MessageBox.Show("Размер группы должен быть числом.", "Предупреждение",
+                                    MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-
-            int classId = Convert.ToInt32(CbClass.SelectedValue);
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -132,14 +156,14 @@ namespace WPFPPShall
 
                 if (_currentGroupId == 0)
                 {
-                    // INSERT
+                    // INSERT с GroupSize
                     SqlCommand insert = new SqlCommand(@"
-                        INSERT INTO StudentGroup (GroupName, ClassID)
-                        VALUES (@name, @cid);
+                        INSERT INTO StudentGroup (GroupName, GroupSize)
+                        VALUES (@name, @size);
                         SELECT SCOPE_IDENTITY();", conn);
 
                     insert.Parameters.AddWithValue("@name", TxtGroupName.Text.Trim());
-                    insert.Parameters.AddWithValue("@cid", classId);
+                    insert.Parameters.AddWithValue("@size", groupSize.HasValue ? (object)groupSize.Value : DBNull.Value);
 
                     object newIdObj = insert.ExecuteScalar();
                     _currentGroupId = Convert.ToInt32(newIdObj);
@@ -150,11 +174,11 @@ namespace WPFPPShall
                     SqlCommand update = new SqlCommand(@"
                         UPDATE StudentGroup
                         SET GroupName = @name,
-                            ClassID = @cid
-                        WHERE StudentGroupID = @id", conn);
+                            GroupSize = @size
+                        WHERE GroupID = @id", conn);
 
                     update.Parameters.AddWithValue("@name", TxtGroupName.Text.Trim());
-                    update.Parameters.AddWithValue("@cid", classId);
+                    update.Parameters.AddWithValue("@size", groupSize.HasValue ? (object)groupSize.Value : DBNull.Value);
                     update.Parameters.AddWithValue("@id", _currentGroupId);
 
                     update.ExecuteNonQuery();
@@ -162,6 +186,7 @@ namespace WPFPPShall
             }
 
             LoadGroups();
+            LoadPieChart();
         }
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
@@ -174,7 +199,7 @@ namespace WPFPPShall
             }
 
             var result = MessageBox.Show(
-                "Удалить выбранную группу? Если она используется в других таблицах, могут возникнуть ошибки.",
+                "Удалить выбранную группу?",
                 "Подтверждение удаления",
                 MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
@@ -186,7 +211,7 @@ namespace WPFPPShall
                 conn.Open();
 
                 SqlCommand delete = new SqlCommand(
-                    "DELETE FROM StudentGroup WHERE StudentGroupID = @id", conn);
+                    "DELETE FROM StudentGroup WHERE GroupID = @id", conn);
                 delete.Parameters.AddWithValue("@id", _currentGroupId);
 
                 try
@@ -196,13 +221,20 @@ namespace WPFPPShall
                 catch (SqlException ex)
                 {
                     MessageBox.Show(
-                        "Не удалось удалить группу. Возможно, она используется в других данных.\n\n" + ex.Message,
+                        "Не удалось удалить группу.\n\n" + ex.Message,
                         "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
 
             LoadGroups();
+            LoadPieChart();
+        }
+
+        private void BtnRefresh_Click(object sender, RoutedEventArgs e)
+        {
+            LoadGroups();
+            LoadPieChart();
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)

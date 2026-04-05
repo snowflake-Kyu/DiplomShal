@@ -19,6 +19,13 @@ namespace WPFPPShall
     /// <summary>
     /// Логика взаимодействия для FormTeachingAssigment.xaml
     /// </summary>
+
+    public class TeacherLoadData
+    {
+        public string TeacherName { get; set; }
+        public int DisciplineCount { get; set; }
+    }
+
     public partial class FormTeachingAssigment : Window
     {
         private string connectionString =
@@ -36,6 +43,7 @@ namespace WPFPPShall
             InitializeComponent();
             LoadLookups();
             LoadAssignments(null); // все назначения
+            LoadTeacherLoadChart();
         }
 
         private void LoadLookups()
@@ -375,6 +383,7 @@ WHERE AssignmentID = @id", conn);
                 filter = Convert.ToInt32(CbFilterTeacher.SelectedValue);
             LoadLookups();
             LoadAssignments(filter);
+            LoadTeacherLoadChart();
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
@@ -410,6 +419,79 @@ WHERE AssignmentID = @id", conn);
 
             // Обновляем счетчик после применения фильтра
             UpdateAssignmentCount();
+        }
+
+        /// <summary>
+        /// Загружает данные для графика: сколько предметов ведёт каждый учитель
+        /// </summary>
+        private void LoadTeacherLoadChart()
+        {
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    string query = @"
+                SELECT 
+                    ISNULL(t.FullName, 'Не назначен') AS TeacherName,
+                    COUNT(DISTINCT ta.DisciplineID) AS DisciplineCount
+                FROM TeachingAssignment ta
+                LEFT JOIN Teacher t ON ta.TeacherID = t.TeacherID
+                GROUP BY t.FullName
+                ORDER BY DisciplineCount DESC";
+
+                    SqlCommand cmd = new SqlCommand(query, conn);
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    DataTable dt = new DataTable();
+                    da.Fill(dt);
+
+                    // Преобразуем в список для графика
+                    var chartData = new List<TeacherLoadData>();
+                    var teacherNames = new List<string>();
+                    var disciplineCounts = new List<int>();
+
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string name = row["TeacherName"].ToString();
+                        int count = Convert.ToInt32(row["DisciplineCount"]);
+                        chartData.Add(new TeacherLoadData
+                        {
+                            TeacherName = name,
+                            DisciplineCount = count
+                        });
+                        teacherNames.Add(name);
+                        disciplineCounts.Add(count);
+                    }
+
+                    // Привязываем данные к графику
+                    ColumnSeries1.Values = new LiveCharts.ChartValues<int>(disciplineCounts);
+
+                    // Настройка оси X с именами учителей
+                    TeacherLoadChart.AxisX.Clear();
+                    TeacherLoadChart.AxisX.Add(new LiveCharts.Wpf.Axis
+                    {
+                        Title = "Учителя",
+                        Labels = teacherNames,
+                        FontSize = 10,
+                        LabelsRotation = -30
+                    });
+
+                    // Настройка оси Y
+                    TeacherLoadChart.AxisY.Clear();
+                    TeacherLoadChart.AxisY.Add(new LiveCharts.Wpf.Axis
+                    {
+                        Title = "Количество предметов",
+                        FontSize = 11,
+                        MinValue = 0
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Если ошибка — просто игнорируем
+                Console.WriteLine($"Ошибка загрузки графика: {ex.Message}");
+            }
         }
     }
 }

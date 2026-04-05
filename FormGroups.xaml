@@ -4,8 +4,13 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFPPShall"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
-        Title="FormGroups" Height="450" Width="800">
+        Title="🎪 Группы (кружки и секции)" 
+        Height="650" 
+        Width="1000"
+        WindowStartupLocation="CenterScreen">
+
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -14,15 +19,16 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="1.5*"/>
+            <ColumnDefinition Width="1.5*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Заголовок -->
-        <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-                   Text="Группы (ученические)"
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="3"
+                   Text="🎪 Группы (кружки и секции)"
                    FontFamily="Segoe UI"
-                   FontSize="16"
+                   FontSize="18"
                    FontWeight="SemiBold"
                    Margin="0,0,0,8"/>
 
@@ -33,32 +39,95 @@
                 CornerRadius="8"
                 BorderBrush="#D1D5DB" BorderThickness="1"
                 Padding="4">
-            <DataGrid x:Name="GroupsGrid"
-                      AutoGenerateColumns="False"
-                      IsReadOnly="True"
-                      HeadersVisibility="Column"
-                      GridLinesVisibility="Horizontal"
-                      SelectionMode="Single"
-                      SelectionUnit="FullRow"
-                      RowHeight="26"
-                      AlternationCount="2"
-                      SelectionChanged="GroupsGrid_SelectionChanged">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="ID"
-                                        Binding="{Binding StudentGroupID}"
-                                        Width="60"/>
-                    <DataGridTextColumn Header="Группа"
-                                        Binding="{Binding GroupName}"
-                                        Width="*"/>
-                    <DataGridTextColumn Header="Класс"
-                                        Binding="{Binding ClassName}"
-                                        Width="120"/>
-                </DataGrid.Columns>
-            </DataGrid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="📋 Список групп" 
+                           FontWeight="Bold" 
+                           Margin="5,5,0,8"/>
+
+                <DataGrid x:Name="GroupsGrid"
+                          Grid.Row="1"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal"
+                          SelectionMode="Single"
+                          SelectionUnit="FullRow"
+                          RowHeight="26"
+                          AlternationCount="2"
+                          SelectionChanged="GroupsGrid_SelectionChanged">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding GroupID}" Width="50"/>
+                        <DataGridTextColumn Header="Название группы" Binding="{Binding GroupName}" Width="*"/>
+                        <DataGridTextColumn Header="Размер" Binding="{Binding GroupSize}" Width="80"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
         </Border>
 
         <!-- Панель редактирования -->
+        <!-- Панель редактирования -->
         <Border Grid.Row="1" Grid.Column="1"
+        Background="White"
+        CornerRadius="8"
+        BorderBrush="#D1D5DB" BorderThickness="1"
+        Padding="10"
+        Margin="0,0,8,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                   Text="Название группы:"
+                   Margin="0,0,6,10"
+                   VerticalAlignment="Center"
+                   FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtGroupName"
+                 Grid.Row="0" Grid.Column="1"
+                 Height="28" 
+                 Margin="0,0,0,10"
+                 VerticalContentAlignment="Center"/>
+
+                <TextBlock x:Name="TextBlockClass" Grid.Row="1" Grid.Column="0"
+                   Text="Размер:"
+                   Margin="0,0,6,10"
+                   VerticalAlignment="Center"
+                   FontWeight="SemiBold"/>
+                <TextBox x:Name="TxtGroupSize"
+                 Grid.Row="1" Grid.Column="1"
+                 Height="28" 
+                 Margin="0,0,0,10"
+                 VerticalContentAlignment="Center"/>
+
+                <!-- Скрытый ComboBox (оставляем для совместимости) -->
+                <ComboBox x:Name="CbClass" Visibility="Collapsed"/>
+
+                <Separator Grid.Row="2" Grid.ColumnSpan="2" 
+                   Margin="0,10,0,10"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2"
+                   Text="ℹ️ Группы — это кружки, секции и внеурочные занятия"
+                   FontSize="11"
+                   Foreground="Gray"
+                   TextWrapping="Wrap"
+                   TextAlignment="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- Круговая диаграмма -->
+        <Border Grid.Row="1" Grid.Column="2"
                 Background="White"
                 CornerRadius="8"
                 BorderBrush="#D1D5DB" BorderThickness="1"
@@ -66,54 +135,71 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="Название группы:"
-                           Margin="0,0,6,6"
-                           VerticalAlignment="Center"/>
-                <TextBox x:Name="TxtGroupName"
-                         Grid.Row="0" Grid.Column="1"
-                         Height="24" Margin="0,0,0,6"/>
+                <TextBlock Text="🥧 Распределение групп по классам" 
+                           FontWeight="Bold" 
+                           Margin="0,0,0,10"/>
 
-                <TextBlock Grid.Row="1" Grid.Column="0"
-                           Text="Класс:"
-                           Margin="0,0,6,6"
-                           VerticalAlignment="Center"/>
-                <ComboBox x:Name="CbClass"
-                          Grid.Row="1" Grid.Column="1"
-                          Height="24"
-                          DisplayMemberPath="ClassName"
-                          SelectedValuePath="ClassID"/>
+                <lvc:PieChart x:Name="GroupsPieChart"
+                              Grid.Row="1"
+                              LegendLocation="Right"
+                              InnerRadius="60"
+                              Margin="0,5,0,5">
+                </lvc:PieChart>
+
+                <!-- Центральный текст с общим количеством -->
+                <Border Grid.Row="1"
+                        Background="White" 
+                        CornerRadius="40"
+                        Width="80" Height="80"
+                        HorizontalAlignment="Center" 
+                        VerticalAlignment="Center">
+                    <StackPanel VerticalAlignment="Center" 
+                                HorizontalAlignment="Center">
+                        <TextBlock x:Name="TbTotalGroups" 
+                                   Text="0" 
+                                   FontSize="20" 
+                                   FontWeight="Bold"
+                                   TextAlignment="Center"/>
+                        <TextBlock Text="всего" 
+                                   FontSize="11"
+                                   TextAlignment="Center"/>
+                    </StackPanel>
+                </Border>
             </Grid>
         </Border>
 
         <!-- Нижние кнопки -->
-        <StackPanel Grid.Row="2" Grid.ColumnSpan="2"
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="3"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
-                    Margin="0,8,0,0">
+                    Margin="0,12,0,0">
             <Button x:Name="BtnAdd"
-                    Content="Добавить новую"
-                    Width="130" Height="26" Margin="0,0,6,0"
+                    Content="➕ Добавить"
+                    Width="110" Height="30" Margin="0,0,8,0"
+                    Background="#4CAF50" Foreground="White"
                     Click="BtnAdd_Click"/>
             <Button x:Name="BtnSave"
-                    Content="Сохранить"
-                    Width="100" Height="26" Margin="0,0,6,0"
+                    Content="💾 Сохранить"
+                    Width="100" Height="30" Margin="0,0,8,0"
+                    Background="#2196F3" Foreground="White"
                     Click="BtnSave_Click"/>
             <Button x:Name="BtnDelete"
-                    Content="Удалить"
-                    Width="100" Height="26" Margin="0,0,6,0"
+                    Content="🗑 Удалить"
+                    Width="100" Height="30" Margin="0,0,8,0"
+                    Background="#F44336" Foreground="White"
                     Click="BtnDelete_Click"/>
+            <Button x:Name="BtnRefresh"
+                    Content="🔄 Обновить"
+                    Width="100" Height="30" Margin="0,0,8,0"
+                    Background="#FF9800" Foreground="White"
+                    Click="BtnRefresh_Click"/>
             <Button x:Name="BtnClose"
-                    Content="Закрыть"
-                    Width="90" Height="26"
+                    Content="✖ Закрыть"
+                    Width="90" Height="30"
+                    Background="#9E9E9E" Foreground="White"
                     Click="BtnClose_Click"/>
         </StackPanel>
     </Grid>
