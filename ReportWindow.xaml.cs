@@ -195,7 +195,6 @@ namespace WPFPPShall
 
         private async Task LoadVotesReport()
         {
-            // Запрос для отчета по голосованию
             var query = @"
                 SELECT 
                     d.Name AS Дисциплина,
