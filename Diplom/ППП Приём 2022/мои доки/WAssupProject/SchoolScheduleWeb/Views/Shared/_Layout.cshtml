@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Расписание</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="topbar">
+        <div class="container topbar-inner">
+            <a class="brand" asp-controller="Schedule" asp-action="Index">Расписание занятий</a>
+            <nav class="nav">
+                <a asp-controller="Schedule" asp-action="Index">Главная</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main">
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            ASP.NET Core MVC веб-клиент для просмотра расписания через API
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

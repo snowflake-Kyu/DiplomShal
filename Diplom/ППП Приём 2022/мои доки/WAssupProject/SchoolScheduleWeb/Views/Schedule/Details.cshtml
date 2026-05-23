@@ -1,0 +1,61 @@
+@model ScheduleDetailsViewModel
+@{
+    ViewData["Title"] = "Подробности расписания";
+}
+
+<section class="card details-card">
+    <div class="page-head">
+        <div>
+            <p class="eyebrow">Запись расписания</p>
+            <h1>Подробности</h1>
+            <p class="muted">Источник данных: <code>@Model.ApiBaseUrl</code></p>
+        </div>
+        <a asp-controller="Schedule" asp-action="Index" class="btn btn-secondary">Назад к расписанию</a>
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+    else if (Model.Row != null)
+    {
+        <dl class="details-list">
+            <div>
+                <dt>ID записи</dt>
+                <dd>@Model.Row.ScheduleId</dd>
+            </div>
+            <div>
+                <dt>Дата</dt>
+                <dd>@Model.Row.DateText</dd>
+            </div>
+            <div>
+                <dt>День недели</dt>
+                <dd>@Model.Row.DayOfWeekText</dd>
+            </div>
+            <div>
+                <dt>Время</dt>
+                <dd>@Model.Row.TimeText</dd>
+            </div>
+            <div>
+                <dt>Класс</dt>
+                <dd>@Model.Row.ClassName</dd>
+            </div>
+            <div>
+                <dt>Дисциплина</dt>
+                <dd>@Model.Row.DisciplineName</dd>
+            </div>
+            <div>
+                <dt>Преподаватель</dt>
+                <dd>@Model.Row.TeacherName</dd>
+            </div>
+            <div>
+                <dt>Аудитория</dt>
+                <dd>@Model.Row.AuditoriumName</dd>
+            </div>
+            <div>
+                <dt>Комментарий к назначению</dt>
+                <dd>@(string.IsNullOrWhiteSpace(Model.Row.AssignmentComment) ? "—" : Model.Row.AssignmentComment)</dd>
+            </div>
+        </dl>
+    }
+</section>

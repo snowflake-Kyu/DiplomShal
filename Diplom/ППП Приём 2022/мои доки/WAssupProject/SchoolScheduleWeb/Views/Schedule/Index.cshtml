@@ -1,0 +1,127 @@
+@model ScheduleIndexViewModel
+@{
+    ViewData["Title"] = "Просмотр расписания";
+}
+
+<section class="hero card">
+    <div>
+        <p class="eyebrow">Веб-приложение ASP.NET Core MVC</p>
+        <h1>Просмотр расписания занятий</h1>
+        <p class="muted">Данные загружаются из API: <code>@Model.ApiBaseUrl</code></p>
+    </div>
+    <div class="stats">
+        <div>
+            <span class="stats-value">@Model.Rows.Count</span>
+            <span class="stats-label">записей</span>
+        </div>
+    </div>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <section class="alert alert-danger">
+        <strong>Не удалось загрузить расписание.</strong>
+        <div>@Model.ErrorMessage</div>
+        <div class="hint">Проверь: сначала должен быть запущен API на порту 54040.</div>
+    </section>
+}
+else
+{
+    <section class="card filters">
+        <form method="get" asp-controller="Schedule" asp-action="Index" class="filter-grid">
+            <div class="field">
+                <label for="date">Дата</label>
+                <input type="date" id="date" name="date" value="@Model.Date" />
+            </div>
+
+            <div class="field">
+                <label for="classId">Класс</label>
+                <select id="classId" name="classId">
+                    <option value="">Все классы</option>
+                    @foreach (var item in Model.Classes.OrderBy(x => x.ClassName))
+                    {
+                        <option value="@item.ClassId" selected="@(Model.ClassId == item.ClassId)">@item.ClassName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="disciplineId">Дисциплина</label>
+                <select id="disciplineId" name="disciplineId">
+                    <option value="">Все дисциплины</option>
+                    @foreach (var item in Model.Disciplines.OrderBy(x => x.Name))
+                    {
+                        <option value="@item.DisciplineId" selected="@(Model.DisciplineId == item.DisciplineId)">@item.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="teacherId">Преподаватель</label>
+                <select id="teacherId" name="teacherId">
+                    <option value="">Все преподаватели</option>
+                    @foreach (var item in Model.Teachers.OrderBy(x => x.FullName))
+                    {
+                        <option value="@item.TeacherId" selected="@(Model.TeacherId == item.TeacherId)">@item.FullName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="field field-wide">
+                <label for="search">Поиск</label>
+                <input type="text" id="search" name="search" value="@Model.Search" placeholder="Класс, предмет, преподаватель, аудитория" />
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">Показать</button>
+                <a asp-controller="Schedule" asp-action="Index" class="btn btn-secondary">Сбросить</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="card table-card">
+        @if (Model.Rows.Count == 0)
+        {
+            <div class="empty">
+                <h2>Записей нет</h2>
+                <p>По выбранным условиям расписание не найдено.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-wrapper">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>День</th>
+                            <th>Время</th>
+                            <th>Класс</th>
+                            <th>Дисциплина</th>
+                            <th>Преподаватель</th>
+                            <th>Аудитория</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Rows)
+                        {
+                            <tr>
+                                <td>@item.DateText</td>
+                                <td>@item.DayOfWeekText</td>
+                                <td>@item.TimeText</td>
+                                <td>@item.ClassName</td>
+                                <td>@item.DisciplineName</td>
+                                <td>@item.TeacherName</td>
+                                <td>@item.AuditoriumName</td>
+                                <td class="right">
+                                    <a asp-controller="Schedule" asp-action="Details" asp-route-id="@item.ScheduleId" class="link-button">Подробнее</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </section>
+}

@@ -1,0 +1,47 @@
+@baseUrl = http://localhost:54040
+
+### Проверка запуска
+GET {{baseUrl}}/
+
+### GET все учителя
+GET {{baseUrl}}/api/teachers
+
+### GET учитель по id
+GET {{baseUrl}}/api/teachers/1
+
+### POST добавить учителя
+POST {{baseUrl}}/api/teachers
+Content-Type: application/json
+
+{
+  "FullName": "Иванов Иван Иванович",
+  "Email": "ivanov@example.com"
+}
+
+### PUT изменить учителя
+PUT {{baseUrl}}/api/teachers/1
+Content-Type: application/json
+
+{
+  "TeacherId": 1,
+  "FullName": "Иванов Иван Петрович",
+  "Email": "ivanov.new@example.com"
+}
+
+### DELETE удалить учителя
+DELETE {{baseUrl}}/api/teachers/1
+
+### GET дисциплины
+GET {{baseUrl}}/api/disciplines
+
+### POST добавить дисциплину
+POST {{baseUrl}}/api/disciplines
+Content-Type: application/json
+
+{
+  "Name": "Новая дисциплина",
+  "ShortDescription": "Описание дисциплины"
+}
+
+### GET расписание
+GET {{baseUrl}}/api/schedules
