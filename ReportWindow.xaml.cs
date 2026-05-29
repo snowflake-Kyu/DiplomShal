@@ -32,7 +32,7 @@ namespace WPFPPShall
         {
             InitializeComponent();
 
-            string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;";
+            string connectionString = "Data Source=kpkserver.kpk.local;Initial Catalog=KP_2024_Shalamov;Persist Security Info=True;User ID=user;Password=1234567";
             _repository = new ReportRepository(connectionString);
 
             Loaded += async (s, e) => await LoadFilters();

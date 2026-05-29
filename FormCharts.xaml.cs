@@ -12,7 +12,7 @@ namespace WPFPPShall
 {
     public partial class FormCharts : Window
     {
-        private string connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=KP_2024_Shalamov;Integrated Security=True;";
+        private string connectionString = "Data Source=kpkserver.kpk.local;Initial Catalog=KP_2024_Shalamov;Persist Security Info=True;User ID=user;Password=1234567";
         private List<DisciplineHours> disciplines = new List<DisciplineHours>();
 
         public class DisciplineHours
